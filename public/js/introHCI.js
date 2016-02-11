@@ -25,8 +25,32 @@ function addProjectDetails(e) {
 	var projectID = $(this).closest('.project').attr('id');
 	// get rid of 'project' from the front of the id 'project3'
 	var idNumber = projectID.substr('project'.length);
-
 	console.log("User clicked on project " + idNumber);
+
+	//Calling AJAX endpoint and calling an empty callback function
+	$.get("/project/"+idNumber, addDescription);
+	console.log("/project/"+idNumber);
+
+	var projectIDCaller = "#project" + idNumber + " .details";
+	console.log(projectIDCaller);
+	var divToAdd = $(projectIDCaller);
+	divToAdd.html("<p class = projectInfo> Adding text </p>");
+	divToAdd.append("<p class = projectDes> Adding second text </p>");
+	console.log($(divToAdd).length);
+
+}
+
+function addDescription(result){
+
+	console.log(result);
+	var projectHTML = '<a href="#" class="thumbnail">' +
+	'<img src="' + result['image'] + '"class="detailsImage">' +
+	'<p>' + result['title'] + '</p>' +
+	'<p><small>' + result['date'] + '</small></p></a>';
+
+	$(".details .projectInfo").html(projectHTML);
+	$(".details .projectDes").html(result['summary']);
+
 }
 
 /*
@@ -34,5 +58,27 @@ function addProjectDetails(e) {
  * and apply it
  */
 function randomizeColors(e) {
-	console.log("User clicked on color button");
+	$.get('/palette', callbackFn);
+	e.preventDefault();
 }
+
+function callbackFn(result) {
+	console.log(result.colors.hex);
+
+	var colors = result.colors.hex;
+
+	$('body').css('background-color', colors[0]);
+	$('.thumbnail').css('background-color', colors[1]);
+	$('h1, h2, h3, h4, h5, h5').css('color', colors[2]);
+	$('p').css('color', colors[3]);
+	$('.project img').css('opacity', .75);
+}
+
+
+
+
+
+
+
+
+
